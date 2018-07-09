@@ -125,7 +125,7 @@ class Gamequestion
 	@couple.each do |couple|
 		@question << "#{couple.question} " #invoca método question de Showcouple para devolver preguntas lo concatena al arreglo
 		end
-		return @question.last.to_s #retorna del arreglo preguntas el último elemento y lo convierte en string
+		return @question.last.strip #retorna del arreglo preguntas el último elemento y se convierte en string con strip
 	end
 
 	#devuelve la última respuesta cuando se ejecuta este método
@@ -134,7 +134,7 @@ class Gamequestion
 	@couple.each do |couple|
 		@answer << "#{couple.answer} " #invoca método answer de Showcouple para devolver respuestas lo concatena al arreglo
 		end
-		return @answer.last.to_s #retorna del arreglo respuestas el último elemento y lo convierte en string
+		return @answer.last.strip #retorna del arreglo respuestas el último elemento y se convierte en string con strip
 	end
 
 	# solucionar problema de impresión :: string de parejas couple ## no se necesita en este proyecto
@@ -159,25 +159,62 @@ end
 # puts "#{gamequestion.answer}" #imprime la respuesta -- Azul
 # # puts "#{gamequestion}" #imprime la pregunta y la respuesta -- De que color es el cielo - Azul
 # gamequestion.hit! # se saca una pareja de la bolsa
-# puts "#{gamequestion.question}" #imprime pregunta -- De que color es el cielo Cuantos años tiene un hombre
-# puts "#{gamequestion.answer}" #imprime la respuesta -- Azul dos
-# # puts "#{gamequestion}" #imprime la pregunta y la respuesta -- De que color es el cielo - Azul Cuantos años tiene un hombre - dos
-# gamequestion.hit! # se saca una pareja de la bolsa
-# puts "#{gamequestion.question}" #imprime pregunta -- De que color es el cielo Cuantos años tiene un hombre
-# puts "#{gamequestion.answer}" #imprime la respuesta -- Azul dos
-
+# puts "#{gamequestion.question}" #imprime pregunta --  Cuantos años tiene un hombre
+# puts "#{gamequestion.answer}" #imprime la respuesta -- dos
 
 #----------------------------------LÓGICA------------------------------#
 =begin
 1. Saludo de bienvenida y si está de acuerdo en empezar a jugar teclee S o N
-		2. Pregunta del juego
-			lee las preguntas del archivo .txt en orden consecutivo cada ves que se entra aquí
-		3. Usuario responde
-		4. el juego responde
-			lee la respuesta respectiva de la pregunta del archivo txt y la compara con la respuesta del usuario
-				si la respuesta es correcta se le indica al usuario que es Correcto! y vuelve al punto 2
-				si la respuesta es incorrecta se le indica al usuario que es Incorrecto! Trata de Nuevo y vuelve al punto 3
-		5. termina el juego
-			 al ingresar el usuario la última respuesta correcta, pasa al punto 2 y al no encontrar más preguntas
-				le informa al usuario que el Juego ha Terminado y ha ganado!	
+		si responde N aparece un mensaje y se sale
+		si responde S empieza el juego
+		1. La máquina saca una pregunta de las N preguntas disponibles del archivo
+		2. se da el espacio para que responda el usuario
+		3. si la respuesta es correcta sigue con la siguiente pregunta
+		4. si la respuesta es incorrecta
+				la máquina vuelve y hace la misma pregunta y vuelve y da el espacio para que responda el usuario, 
+				hasta que el usuario responda bien, continua y pasa a la siguiente pregunta es decir vuelve al punto 1
+		5. al responder todas las N preguntas disponibles correctamente se gana y se sale
 =end
+
+		puts "Bienvenido al reto 5, Para jugar, solo ingresa el termino correcto para cada una de las definiciones"
+		puts  "¿Listo para empezar, decide (S) o (N)?"
+		responde = gets.chomp # ingrese respuesta el usuario si quiere jugar o no
+
+		if responde == "S" 
+			allcouples = Decklist.new # crea la lista de preguntas con sus respectivas respuestas
+			gamequestion = Gamequestion.new(allcouples) # meto la lista anterior en la clase Gamesquestion para que la máquina pueda preguntar más adelante
+
+			while (allcouples.couple.length >0) # cuando la bolsa de preguntas se acabe se sale
+
+			gamequestion.hit! # máquina saca una pareja
+			puts "*Definición"
+			puts "*#{gamequestion.question}" #la máquina hace la pregunta
+			responde1 = gets.chomp #usuario responde
+			puts
+			#Hasta que no responda bien el usuario la máquina vuelve y hace la misma pregunta
+				while responde1 != "#{gamequestion.answer}"
+					puts "Incorrecto! Trata de nuevo"
+					puts
+					puts "*Definición"
+					puts "*#{gamequestion.question}"
+					responde1 = gets.chomp
+					puts
+				end
+			#Usuario responde bien
+				if responde1 == "#{gamequestion.answer}"
+					puts "Correcto!"
+					puts
+				end
+
+			end
+			# fin del juego cuando se ha respondido todas las preguntas
+			puts "El juego ha terminado, felicitaciones has ganado respondite todas las preguntas bien!"
+			
+			# Se arrepiente y no quiere empezar el juego
+		 elsif responde == "N"
+		 	puts
+		 	puts "El juego ha terminado, no has jugado nada ni ganado nada!"
+		 	
+		end
+
+
